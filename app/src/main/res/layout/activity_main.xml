@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:background="@color/jj"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_above="@+id/circleIndicator"
+        android:layout_alignParentTop="true">
+    </android.support.v4.view.ViewPager>
+
+    <comulez.github.dropindicator.DropIndicator
+        android:id="@+id/circleIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        app:circle_color="@android:color/darker_gray"
+        app:click_color="#fafafa"
+        app:color1="#FCC04D"
+        app:color2="#00C3E2"
+        app:color3="#FE626D"
+        app:color4="#966ACF"
+        app:duration="800"
+        app:radius="14dp"
+        app:scale="0.5">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/camera" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/video" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/notice" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/msg" />
+
+    </comulez.github.dropindicator.DropIndicator>
+
+</RelativeLayout>
