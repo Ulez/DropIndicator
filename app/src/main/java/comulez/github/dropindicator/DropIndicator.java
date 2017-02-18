@@ -46,7 +46,7 @@ public class DropIndicator extends ViewGroup {
     private float div;
     private float scale = 0.8f;
 
-    private int indiCurrPos = 1;
+    private int indiCurrPos = 0;
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener onPageChangeListener;
     private float indiCurrPosF;
@@ -109,7 +109,7 @@ public class DropIndicator extends ViewGroup {
         startY = mHeight / 2;
         totalOff = (tabNum - 1) * (2 * radius + div) - radius;
 
-        if (indiCurrPos == 1) {
+        if (indiCurrPos == 0) {
             radius = r * ratio;
             mc = (float) (c * ratio);
             p1 = new YPoint(0, radius, mc);
@@ -125,11 +125,11 @@ public class DropIndicator extends ViewGroup {
         float x = event.getX();
         if (x > div + 2 * radius) {
             int yy2 = (int) ((x - div - 2 * radius) / (div + 2 * radius));
-            if (yy2 + 2 != indiCurrPos && yy2 + 2 <= tabNum)
-                startAniTo(yy2 + 2);
+            if (yy2 + 1 != indiCurrPos && yy2 + 1 <= tabNum)
+                startAniTo(yy2 + 1);
         } else if (x > div) {
-            if (indiCurrPos != 1)
-                startAniTo(1);
+            if (indiCurrPos != 0)
+                startAniTo(0);
         }
         return super.onTouchEvent(event);
     }
@@ -137,8 +137,8 @@ public class DropIndicator extends ViewGroup {
     boolean direction = true; //向右为true，向左为false；
 
     private boolean startAniTo(int toPos) {
-        startColor = roundColors[(indiCurrPos - 1) % 4];
-        endColor = roundColors[(toPos - 1) % 4];
+        startColor = roundColors[(indiCurrPos ) % 4];
+        endColor = roundColors[(toPos) % 4];
         p1.setY(radius);
         p1.setX(0);
         p1.setMc(mc);
@@ -161,7 +161,7 @@ public class DropIndicator extends ViewGroup {
 //        p4 = new XPoint(-radius, 0, mc);
 
         direction = toPos - indiCurrPos > 0 ? true : false;
-        startX = div + radius + (indiCurrPos - 1) * (div + 2 * radius);
+        startX = div + radius + (indiCurrPos) * (div + 2 * radius);
         distance = (toPos - indiCurrPos) * (2 * radius + div) + (direction ? -radius : radius);
 
         ValueAnimator animator = ValueAnimator.ofFloat(0, 1.0f);
@@ -175,7 +175,7 @@ public class DropIndicator extends ViewGroup {
         });
         animator.start();
         if (mViewPager != null) {
-            mViewPager.setCurrentItem(toPos - 1);
+            mViewPager.setCurrentItem(toPos);
         }
 //        MoveAnimation animation = new MoveAnimation();
 //        animation.setDuration(duration);
@@ -197,7 +197,7 @@ public class DropIndicator extends ViewGroup {
             canvas.drawCircle(div + radius + i * (div + 2 * radius), startY, radius, mPaintCircle);
         }
         if (mCurrentTime >= 0 && mCurrentTime <= 0.2) {
-            canvas.drawCircle(div + radius + (indiCurrPos - 1) * (div + 2 * radius), startY, radius * 1.0f * 5 * mCurrentTime, mClickPaint);
+            canvas.drawCircle(div + radius + (indiCurrPos) * (div + 2 * radius), startY, radius * 1.0f * 5 * mCurrentTime, mClickPaint);
             mPaint.setColor(startColor);
             canvas.translate(startX, startY);
             if (direction) {
@@ -300,7 +300,7 @@ public class DropIndicator extends ViewGroup {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                startAniTo(position + 1);
+                startAniTo(position);
             }
 
             @Override
