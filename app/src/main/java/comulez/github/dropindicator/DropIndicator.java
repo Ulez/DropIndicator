@@ -129,11 +129,15 @@ public class DropIndicator extends ViewGroup {
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
         if (x > div + 2 * radius && x < (div + 2 * radius) * tabNum) {
+            if (animator != null)
+                animator.cancel();
             int toPos = (int) (x / (div + 2 * radius));
             preTo = toPos;
             if (toPos != currentPos && toPos <= tabNum)
                 startAniTo(currentPos, toPos);
         } else if (x > div && x < div + 2 * radius) {
+            if (animator != null)
+                animator.cancel();
             preTo = 0;
             if (currentPos != 0)
                 startAniTo(currentPos, 0);
@@ -198,7 +202,7 @@ public class DropIndicator extends ViewGroup {
 
                 @Override
                 public void onAnimationCancel(Animator animation) {
-
+                    goo();
                 }
 
                 @Override
