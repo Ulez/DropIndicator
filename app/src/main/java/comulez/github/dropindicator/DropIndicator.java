@@ -1,5 +1,6 @@
 package comulez.github.dropindicator;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,6 +11,7 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +48,8 @@ public class DropIndicator extends ViewGroup {
     private float div;
     private float scale = 0.8f;
 
-    private int indiCurrPos = 0;
+    private int currentPos = 0;//当前显示的位置。
+    private int toPos = -1;//动画要去的位置。
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener onPageChangeListener;
     private float indiCurrPosF;
@@ -54,6 +57,8 @@ public class DropIndicator extends ViewGroup {
     public static final int SCROLL_STATE_IDLE = 0;//空闲；Indicates that the pager is in an idle, settled state. The current page is fully in view and no animation is in progress.
     public static final int SCROLL_STATE_DRAGGING = 1;//拖动；Indicates that the pager is currently being dragged by the user.
     public static final int SCROLL_STATE_SETTLING = 2;//设置过程中；Indicates that the pager is in the process of settling to a final position.
+    private String TAG = "DropIndicator";
+    private int preTo;
 
     public DropIndicator(Context context) {
         this(context, null);
@@ -109,7 +114,7 @@ public class DropIndicator extends ViewGroup {
         startY = mHeight / 2;
         totalOff = (tabNum - 1) * (2 * radius + div) - radius;
 
-        if (indiCurrPos == 0) {
+        if (currentPos == 0) {
             radius = r * ratio;
             mc = (float) (c * ratio);
             p1 = new YPoint(0, radius, mc);
@@ -123,21 +128,28 @@ public class DropIndicator extends ViewGroup {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
-        if (x > div + 2 * radius) {
-            int yy2 = (int) ((x - div - 2 * radius) / (div + 2 * radius));
-            if (yy2 + 1 != indiCurrPos && yy2 + 1 <= tabNum)
-                startAniTo(yy2 + 1);
-        } else if (x > div) {
-            if (indiCurrPos != 0)
-                startAniTo(0);
+        if (x > div + 2 * radius && x < (div + 2 * radius) * tabNum) {
+            int toPos = (int) (x / (div + 2 * radius));
+            preTo = toPos;
+            if (toPos != currentPos && toPos <= tabNum)
+                startAniTo(currentPos, toPos);
+        } else if (x > div && x < div + 2 * radius) {
+            preTo = 0;
+            if (currentPos != 0)
+                startAniTo(currentPos, 0);
         }
         return super.onTouchEvent(event);
     }
 
-    boolean direction = true; //向右为true，向左为false；
+    //    boolean direction = true; //向右为true，向左为false；
+    ValueAnimator animator;
 
-    private boolean startAniTo(int toPos) {
-        startColor = roundColors[(indiCurrPos ) % 4];
+    private boolean startAniTo(int currentPos, int toPos) {
+        this.currentPos = currentPos;
+        this.toPos = toPos;
+        if (currentPos == toPos)
+            return true;
+        startColor = roundColors[(this.currentPos) % 4];
         endColor = roundColors[(toPos) % 4];
         p1.setY(radius);
         p1.setX(0);
@@ -160,19 +172,41 @@ public class DropIndicator extends ViewGroup {
 //        p2 = new XPoint(radius, 0, mc);
 //        p4 = new XPoint(-radius, 0, mc);
 
-        direction = toPos - indiCurrPos > 0 ? true : false;
-        startX = div + radius + (indiCurrPos) * (div + 2 * radius);
-        distance = (toPos - indiCurrPos) * (2 * radius + div) + (direction ? -radius : radius);
+        startX = div + radius + (this.currentPos) * (div + 2 * radius);    //boolean direction = true; //向右为true，向左为false；
+        distance = (toPos - this.currentPos) * (2 * radius + div) + (toPos > currentPos ? -radius : radius);
 
-        ValueAnimator animator = ValueAnimator.ofFloat(0, 1.0f);
-        animator.setDuration(duration);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mCurrentTime = (float) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
+        if (animator == null) {
+            animator = ValueAnimator.ofFloat(0, 1.0f);
+            animator.setDuration(duration);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mCurrentTime = (float) animation.getAnimatedValue();
+                    invalidate();
+                }
+            });
+            animator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    goo();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+        }
         animator.start();
         if (mViewPager != null) {
             mViewPager.setCurrentItem(toPos);
@@ -181,26 +215,42 @@ public class DropIndicator extends ViewGroup {
 //        animation.setDuration(duration);
 //        animation.setInterpolator(new AccelerateDecelerateInterpolator());
 //        startAnimation(animation);
-        indiCurrPos = toPos;
         return true;
+    }
+
+    private void goo() {
+        currentPos = toPos;
     }
 
     private int startColor;
     private int endColor;
+    boolean direction = true; //向右为true，向左为false；
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        Log.e(TAG, "dispatchDraw,,mCurrentTime=" + mCurrentTime + "currentPos=" + currentPos + ",toPos" + toPos);
         canvas.save();//保存画布；
         mPath.reset();
         tabNum = getChildCount();
         for (int i = 0; i < tabNum; i++) {
             canvas.drawCircle(div + radius + i * (div + 2 * radius), startY, radius, mPaintCircle);
         }
-        if (mCurrentTime >= 0 && mCurrentTime <= 0.2) {
-            canvas.drawCircle(div + radius + (indiCurrPos) * (div + 2 * radius), startY, radius * 1.0f * 5 * mCurrentTime, mClickPaint);
+        if (mCurrentTime == 0) {
+            canvas.drawCircle(div + radius + (currentPos) * (div + 2 * radius), startY, 0, mClickPaint);
             mPaint.setColor(startColor);
             canvas.translate(startX, startY);
-            if (direction) {
+            if (toPos > currentPos) {
+                p2.setX(radius);
+            } else {
+                p4.setX(-radius);
+            }
+        }
+        if (mCurrentTime > 0 && mCurrentTime <= 0.2) {
+            direction = toPos > currentPos ? true : false;
+            canvas.drawCircle(div + radius + (toPos) * (div + 2 * radius), startY, radius * 1.0f * 5 * mCurrentTime, mClickPaint);
+            mPaint.setColor(startColor);
+            canvas.translate(startX, startY);
+            if (toPos > currentPos) {
                 p2.setX(radius + 2 * 5 * mCurrentTime * radius / 2);//注：1.08为修正值，真实应该是1；
 //            Log.e("LCY", "mCurrentTime=" + mCurrentTime);//mCurrentTime=0.18493307;只到了这里；刷新间隔0.02s；
             } else {
@@ -208,7 +258,7 @@ public class DropIndicator extends ViewGroup {
             }
         } else if (mCurrentTime > 0.2 && mCurrentTime <= 0.5) {
             canvas.translate(startX + (mCurrentTime - 0.2f) * distance / 0.7f, startY);
-            if (direction) {
+            if (toPos > currentPos) {
                 p2.setX(2 * radius);
                 p1.setX(0.5f * radius * (mCurrentTime - 0.2f) / 0.3f);
                 p3.setX(0.5f * radius * (mCurrentTime - 0.2f) / 0.3f);
@@ -223,7 +273,7 @@ public class DropIndicator extends ViewGroup {
             }
         } else if (mCurrentTime > 0.5 && mCurrentTime <= 0.8) {
             canvas.translate(startX + (mCurrentTime - 0.2f) * distance / 0.7f, startY);
-            if (direction) {
+            if (toPos > currentPos) {
                 p1.setX(0.5f * radius + 0.5f * radius * (mCurrentTime - 0.5f) / 0.3f);
                 p3.setX(0.5f * radius + 0.5f * radius * (mCurrentTime - 0.5f) / 0.3f);
                 p2.setMc(1.25f * mc - 0.25f * mc * (mCurrentTime - 0.5f) / 0.3f);
@@ -238,15 +288,14 @@ public class DropIndicator extends ViewGroup {
             p2.setMc(mc);
             p4.setMc(mc);
             canvas.translate(startX + (mCurrentTime - 0.2f) * distance / 0.7f, startY);
-            if (direction) {
+            if (toPos > currentPos) {
                 p4.setX(-radius + 1.6f * radius * (mCurrentTime - 0.8f) / 0.1f);//r+r;
             } else {
                 p2.setX(radius - 1.6f * radius * (mCurrentTime - 0.8f) / 0.1f);//r+r;
             }
-        } else if (mCurrentTime > 0.9 && mCurrentTime <= 1) {
+        } else if (mCurrentTime > 0.9 && mCurrentTime < 1) {
             mPaint.setColor(endColor);
-
-            if (direction) {
+            if (toPos > currentPos) {// TODO: 2017/2/18  到这里会发生突变。处理临界：mCurrentTime=1；mCurrentTime=0；toPos==currentPos
                 p1.setX(radius);
                 p3.setX(radius);
                 canvas.translate(startX + distance, startY);
@@ -256,6 +305,20 @@ public class DropIndicator extends ViewGroup {
                 p3.setX(-radius);
                 canvas.translate(startX + distance, startY);
                 p2.setX(-0.6f * radius + 0.6f * radius * (mCurrentTime - 0.9f) / 0.1f);
+            }
+        }
+        if (mCurrentTime == 1) {
+            mPaint.setColor(endColor);
+            if (direction) {// TODO: 2017/2/18  到这里会发生突变。处理临界：mCurrentTime=1；mCurrentTime=0；toPos==currentPos，这里不得不用direction，因为在动画结束时会toPos = currentPos，但是还会重绘一次，这次的重绘方向就判断不了了。
+                p1.setX(radius);
+                p3.setX(radius);
+                canvas.translate(startX + distance, startY);
+                p4.setX(0);
+            } else {
+                p1.setX(-radius);
+                p3.setX(-radius);
+                canvas.translate(startX + distance, startY);
+                p2.setX(0);
             }
         }
         mPath.moveTo(p1.x, p1.y);
@@ -300,7 +363,7 @@ public class DropIndicator extends ViewGroup {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                startAniTo(position);
+                startAniTo(currentPos, position);
             }
 
             @Override
