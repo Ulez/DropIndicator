@@ -9,13 +9,13 @@
     android:background="@color/jj"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-    <android.support.v4.view.ViewPager
+    <comulez.github.dropindicator.DropViewPager
         android:id="@+id/mViewPager"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_above="@+id/circleIndicator"
         android:layout_alignParentTop="true">
-    </android.support.v4.view.ViewPager>
+    </comulez.github.dropindicator.DropViewPager>
 
     <comulez.github.dropindicator.DropIndicator
         android:id="@+id/circleIndicator"

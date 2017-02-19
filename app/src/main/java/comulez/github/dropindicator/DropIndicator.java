@@ -57,7 +57,7 @@ public class DropIndicator extends ViewGroup {
     public static final int SCROLL_STATE_DRAGGING = 1;//拖动；Indicates that the pager is currently being dragged by the user.
     public static final int SCROLL_STATE_SETTLING = 2;//设置过程中；Indicates that the pager is in the process of settling to a final position.
     private String TAG = "DropIndicator";
-    private boolean forbiden;
+    private boolean animating;
 
     public DropIndicator(Context context) {
         this(context, null);
@@ -175,19 +175,22 @@ public class DropIndicator extends ViewGroup {
             animator.addListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    forbiden = true;
+                    animating = true;
+                    setTouchAble(!animating);
                 }
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     goo();
-                    forbiden = false;
+                    animating = false;
+                    setTouchAble(!animating);
                 }
 
                 @Override
                 public void onAnimationCancel(Animator animation) {
                     goo();
-                    forbiden = false;
+                    animating = false;
+                    setTouchAble(!animating);
                 }
 
                 @Override
@@ -205,6 +208,11 @@ public class DropIndicator extends ViewGroup {
 //        animation.setInterpolator(new AccelerateDecelerateInterpolator());
 //        startAnimation(animation);
         return true;
+    }
+
+    private void setTouchAble(boolean touchAble) {
+        if (mViewPager instanceof DropViewPager)
+            ((DropViewPager) mViewPager).setTouchable(touchAble);
     }
 
     private void resetP() {
@@ -254,8 +262,8 @@ public class DropIndicator extends ViewGroup {
         }
         if (mCurrentTime > 0 && mCurrentTime <= 0.2) {
             direction = toPos > currentPos ? true : false;
-            canvas.drawCircle(div + radius + (toPos) * (div + 2 * radius), startY, radius * 1.0f * 5 * mCurrentTime, mClickPaint);
-            mPaint.setColor(startColor);
+            if (animating)
+                canvas.drawCircle(div + radius + (toPos) * (div + 2 * radius), startY, radius * 1.0f * 5 * mCurrentTime, mClickPaint);
             canvas.translate(startX, startY);
             if (toPos > currentPos) {
                 p2.setX(radius + 2 * 5 * mCurrentTime * radius / 2);//注：1.08为修正值，真实应该是1；
@@ -300,7 +308,6 @@ public class DropIndicator extends ViewGroup {
                 p2.setX(radius - 1.6f * radius * (mCurrentTime - 0.8f) / 0.1f);//r+r;
             }
         } else if (mCurrentTime > 0.9 && mCurrentTime < 1) {
-            mPaint.setColor(endColor);
             if (toPos > currentPos) {// TODO: 2017/2/18  到这里会发生突变。处理临界：mCurrentTime=1；mCurrentTime=0；toPos==currentPos
                 p1.setX(radius);
                 p3.setX(radius);
@@ -387,7 +394,7 @@ public class DropIndicator extends ViewGroup {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 // 滚动
                 try {
-                    if (!forbiden) {
+                    if (!animating) {
                         updateDrop(position, positionOffset, positionOffsetPixels);
                     }
                 } catch (Exception e) {

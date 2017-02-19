@@ -1,15 +1,14 @@
 package comulez.github.dropindicator;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private ViewPager mViewPager;
+    private DropViewPager mViewPager;
     private DropIndicator circleIndicator;
     private FragmentPagerAdapter mAdapter;
     private ArrayList<Fragment> mTabContents=new ArrayList<>();
@@ -17,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mViewPager= (ViewPager) findViewById(R.id.mViewPager);
+        mViewPager= (DropViewPager) findViewById(R.id.mViewPager);
         circleIndicator = (DropIndicator) findViewById(R.id.circleIndicator);
         mTabContents.add(BlankFragment.newInstance("0",0));
         mTabContents.add(BlankFragment.newInstance("1",1));
