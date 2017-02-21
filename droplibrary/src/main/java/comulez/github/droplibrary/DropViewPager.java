@@ -1,4 +1,4 @@
-package comulez.github.dropindicator;
+package comulez.github.droplibrary;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

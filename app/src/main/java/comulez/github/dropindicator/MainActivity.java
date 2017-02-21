@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
+import comulez.github.droplibrary.DropIndicator;
+import comulez.github.droplibrary.DropViewPager;
+
 public class MainActivity extends AppCompatActivity {
     private DropViewPager mViewPager;
     private DropIndicator circleIndicator;

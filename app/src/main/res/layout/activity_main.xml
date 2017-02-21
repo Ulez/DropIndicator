@@ -9,15 +9,15 @@
     android:background="@color/jj"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-    <comulez.github.dropindicator.DropViewPager
+    <comulez.github.droplibrary.DropViewPager
         android:id="@+id/mViewPager"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_above="@+id/circleIndicator"
         android:layout_alignParentTop="true">
-    </comulez.github.dropindicator.DropViewPager>
+    </comulez.github.droplibrary.DropViewPager>
 
-    <comulez.github.dropindicator.DropIndicator
+    <comulez.github.droplibrary.DropIndicator
         android:id="@+id/circleIndicator"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -52,6 +52,6 @@
             android:layout_height="wrap_content"
             android:src="@drawable/msg" />
 
-    </comulez.github.dropindicator.DropIndicator>
+    </comulez.github.droplibrary.DropIndicator>
 
 </RelativeLayout>

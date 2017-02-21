@@ -1,4 +1,4 @@
-package comulez.github.dropindicator;
+package comulez.github.droplibrary;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -11,7 +11,6 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -343,8 +342,8 @@ public class DropIndicator extends ViewGroup {
             else
                 canvas.translate(-radius, 0);
         }
-        Log.e(TAG, "mCurrentTime=" + mCurrentTime + ",currentPos=" + currentPos + ",toPos=" + toPos + ",direction=" + direction);
-        Log.e(TAG, p1.toString() + "\n" + p2.toString() + "\n" + p3.toString() + "\n" + p4.toString());
+//        Log.e(TAG, "mCurrentTime=" + mCurrentTime + ",currentPos=" + currentPos + ",toPos=" + toPos + ",direction=" + direction);
+//        Log.e(TAG, p1.toString() + "\n" + p2.toString() + "\n" + p3.toString() + "\n" + p4.toString());
         mPath.moveTo(p1.x, p1.y);
         mPath.cubicTo(p1.right.x, p1.right.y, p2.bottom.x, p2.bottom.y, p2.x, p2.y);
         mPath.cubicTo(p2.top.x, p2.top.y, p3.right.x, p3.right.y, p3.x, p3.y);
@@ -458,7 +457,7 @@ public class DropIndicator extends ViewGroup {
             else if (lastCurrentTime > 0.9)
                 mCurrentTime = 1;
         }
-        Log.e(TAG, "mCurrentTime=" + mCurrentTime + ",currentPos=" + currentPos + ",toPos=" + toPos + ",direction=" + direction);
+//        Log.e(TAG, "mCurrentTime=" + mCurrentTime + ",currentPos=" + currentPos + ",toPos=" + toPos + ",direction=" + direction);
         lastCurrentTime = mCurrentTime;
         invalidate();
     }
