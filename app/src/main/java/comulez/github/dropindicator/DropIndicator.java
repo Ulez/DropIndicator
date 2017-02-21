@@ -191,6 +191,8 @@ public class DropIndicator extends ViewGroup {
                     goo();
                     animating = false;
                     setTouchAble(!animating);
+                    mCurrentTime=1;
+                    invalidate();
                 }
 
                 @Override
