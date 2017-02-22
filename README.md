@@ -15,3 +15,6 @@ repositories {
 ```java
 compile 'com.github.ulez:dropindicator:0.0.1'
 ```
+## Lisence:
+
+Lisenced under [Apache 2.0 lisence](http://opensource.org/licenses/Apache-2.0)
