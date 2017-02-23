@@ -13,7 +13,7 @@ repositories {
 ```
 #####Step 2
 ```java
-compile 'com.github.ulez:dropindicator:0.0.1'
+compile 'com.github.ulez:dropindicator:0.0.2'
 ```
 
 #####Step 3
