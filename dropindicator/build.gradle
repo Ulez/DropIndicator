@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+version = '0.0.2'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
@@ -28,4 +30,66 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
+}
+
+def siteUrl = 'https://github.com/Ulez/DropIndicator'   // 项目的主页
+def gitUrl = 'https://github.com/Ulez/DropIndicator.git'   // Git仓库的url
+group = "com.github.ulez"            // Maven Group ID for the artifact，
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                // Add your description here
+                name 'A cool indicator for ViewPager'
+                //项目的描述 你可以多写一点
+                url siteUrl
+                // Set your license
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'ulez'        //填写的一些基本信息
+                        name 'ulez'
+                        email 'lcy1532110757@gmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+artifacts {
+    archives sourcesJar
+}
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        //userOrg = "ulez"
+        repo = "maven"          //这个应该是传到maven的仓库的
+        name = "dropindicator"    //发布的项目名字
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
 }

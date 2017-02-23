@@ -10,10 +10,10 @@ import android.view.MotionEvent;
  * Email：lcy1532110757@gmail.com
  */
 
-public class DropViewPager extends ViewPager {
-
+public class DropViewPager extends ViewPager implements Touchable {
     private boolean touchable = true;
 
+    @Override
     public void setTouchable(boolean touchable) {
         this.touchable = touchable;
     }
@@ -33,4 +33,5 @@ public class DropViewPager extends ViewPager {
         else
             return true;
     }
+
 }
