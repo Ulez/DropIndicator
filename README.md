@@ -3,20 +3,12 @@
 <img src="https://github.com/Ulez/DropIndicator/blob/master/screenshots/view.gif" width = "300" height = "507.6" align=center />
 
 ##How to use?
-#####Step 1 
-```build
-repositories {
-    maven {
-        url 'https://dl.bintray.com/ulez666/maven'
-    }
-}
-```
-#####Step 2
+#####Step 1
 ```java
 compile 'com.github.ulez:dropindicator:0.0.2'
 ```
 
-#####Step 3
+#####Step 2
 ```xml
     <comulez.github.droplibrary.DropIndicator
         android:background="@color/colorPrimary"
