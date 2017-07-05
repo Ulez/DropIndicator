@@ -32,6 +32,7 @@ compile 'com.github.ulez:dropindicator:0.0.2'
             ........
     </comulez.github.droplibrary.DropIndicator>
 ```
+[Blog博客](http://blog.csdn.net/s122ktyt/article/details/55798658) 
 ## Lisence:
 
 Lisenced under [Apache 2.0 lisence](http://opensource.org/licenses/Apache-2.0)
