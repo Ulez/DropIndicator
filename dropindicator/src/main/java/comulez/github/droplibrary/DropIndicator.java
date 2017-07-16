@@ -56,7 +56,7 @@ public class DropIndicator extends ViewGroup {
     public static final int SCROLL_STATE_DRAGGING = 1;
     public static final int SCROLL_STATE_SETTLING = 2;
     private String TAG = "DropIndicator";
-    private volatile boolean animating;
+    private boolean animating;
 
     public DropIndicator(Context context) {
         this(context, null);
@@ -172,23 +172,23 @@ public class DropIndicator extends ViewGroup {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     animating = true;
-                    setTouchAble(false);
+                    setTouchAble(!animating);
                 }
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     goo();
                     animating = false;
-                    setTouchAbleDelayed(true);
+                    setTouchAble(!animating);
                 }
 
                 @Override
                 public void onAnimationCancel(Animator animation) {
                     goo();
                     animating = false;
+                    setTouchAble(!animating);
                     mCurrentTime=1;
                     invalidate();
-                    setTouchAbleDelayed(true);
                 }
 
                 @Override
@@ -203,15 +203,6 @@ public class DropIndicator extends ViewGroup {
         }
 
         return true;
-    }
-
-    private void setTouchAbleDelayed(final boolean b) {
-        this.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setTouchAble(b);
-            }
-        },100);
     }
 
     private void setTouchAble(boolean touchAble) {
