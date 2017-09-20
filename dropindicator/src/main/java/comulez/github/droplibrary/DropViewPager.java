@@ -27,11 +27,19 @@ public class DropViewPager extends ViewPager implements Touchable {
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (touchable)
+            return super.onInterceptTouchEvent(ev);
+        else
+            return false;
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (touchable)
             return super.onTouchEvent(ev);
         else
-            return true;
+            return false;
     }
 
 }
